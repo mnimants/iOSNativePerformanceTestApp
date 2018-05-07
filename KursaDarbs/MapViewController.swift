@@ -14,6 +14,9 @@ let tokyoLocation = CLLocation.init(latitude: 35.6735408, longitude: 139.5703047
 let nycLocation = CLLocation.init(latitude: 40.6976637, longitude: -74.1197639)
 let londonLocation = CLLocation.init(latitude: 51.5287718, longitude: -0.2416803)
 
+let duration: Double = 1
+let intervalBetweenJumps: Double = 3
+
 class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
@@ -51,7 +54,7 @@ class MapViewController: UIViewController {
 
     private func startJumping() {
         isJumpingAround = true
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector: (#selector(jumpToNextLocation)), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: intervalBetweenJumps, target: self,   selector: (#selector(jumpToNextLocation)), userInfo: nil, repeats: true)
         
     }
     private func stopJumping() {
@@ -70,7 +73,15 @@ class MapViewController: UIViewController {
         let location = locations[currentIndex]
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate,
                                                                   radius, radius)
-        mapView.setRegion(coordinateRegion, animated: true)
+        mapView.animatedZoom(zoomRegion: coordinateRegion, duration: duration)
+    }
+}
+
+extension MKMapView {
+    func animatedZoom(zoomRegion:MKCoordinateRegion, duration:TimeInterval) {
+        MKMapView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 10, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.setRegion(zoomRegion, animated: true)
+        }, completion: nil)
     }
 }
 
