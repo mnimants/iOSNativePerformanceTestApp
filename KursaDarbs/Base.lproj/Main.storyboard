@@ -46,6 +46,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="First" image="first" id="acW-dT-cKf"/>
                     <connections>
+                        <outlet property="jumpButton" destination="v8r-hP-brI" id="Nd0-N4-X5D"/>
                         <outlet property="mapView" destination="pgM-mk-vrW" id="9iy-rH-2iJ"/>
                     </connections>
                 </viewController>

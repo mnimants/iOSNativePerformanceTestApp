@@ -21,6 +21,8 @@ class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet weak var jumpButton: UIButton!
+    
     var isJumpingAround = false
     
     var timer = Timer()
@@ -44,6 +46,8 @@ class MapViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         locations.append(contentsOf: [universityLocation, nycLocation, londonLocation, tokyoLocation])
+        
+        startJumping()
     }
     
     override func didReceiveMemoryWarning() {
@@ -53,11 +57,15 @@ class MapViewController: UIViewController {
     }
 
     private func startJumping() {
+        jumpButton.setTitle("Stop Jumping", for: .normal)
+        
         isJumpingAround = true
         timer = Timer.scheduledTimer(timeInterval: intervalBetweenJumps, target: self,   selector: (#selector(jumpToNextLocation)), userInfo: nil, repeats: true)
         
     }
     private func stopJumping() {
+        jumpButton.setTitle("Start Jumping", for: .normal)
+        
         isJumpingAround = false
         timer.invalidate()
     }
@@ -67,7 +75,9 @@ class MapViewController: UIViewController {
         
         currentIndex = currentIndex + 1
         if currentIndex == locations.count {
-            currentIndex = 0
+            stopJumping()
+            
+            return
         }
         
         let location = locations[currentIndex]
