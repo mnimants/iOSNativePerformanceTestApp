@@ -22,19 +22,9 @@ class MapViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     
     @IBOutlet weak var jumpButton: UIButton!
-    
-    var isJumpingAround = false
-    
-    var timer = Timer()
-    
+
     @IBAction func didTapToggleJumping(_ sender: Any) {
-        if isJumpingAround {
-            stopJumping()
-            
-            return
-        }
-        
-        startJumping()
+        jumpToNextLocation()
     }
     
     var locations: [CLLocation] = []
@@ -43,11 +33,10 @@ class MapViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
         locations.append(contentsOf: [universityLocation, nycLocation, londonLocation, tokyoLocation])
         
-        startJumping()
+        jumpButton.setTitle("Jump to next location", for: .normal)
     }
     
     override func didReceiveMemoryWarning() {
@@ -55,29 +44,13 @@ class MapViewController: UIViewController {
         
         print("didReceiveMemoryWarning")
     }
-
-    private func startJumping() {
-        jumpButton.setTitle("Stop Jumping", for: .normal)
-        
-        isJumpingAround = true
-        timer = Timer.scheduledTimer(timeInterval: intervalBetweenJumps, target: self,   selector: (#selector(jumpToNextLocation)), userInfo: nil, repeats: true)
-        
-    }
-    private func stopJumping() {
-        jumpButton.setTitle("Start Jumping", for: .normal)
-        
-        isJumpingAround = false
-        timer.invalidate()
-    }
     
-    @objc func jumpToNextLocation() {
+    func jumpToNextLocation() {
         let radius: CLLocationDistance = 5000 // 5km
         
         currentIndex = currentIndex + 1
         if currentIndex == locations.count {
-            stopJumping()
-            
-            return
+            currentIndex = 0
         }
         
         let location = locations[currentIndex]
